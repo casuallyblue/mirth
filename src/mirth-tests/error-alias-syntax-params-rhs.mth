@@ -1,4 +1,0 @@
-module(mirth-tests.error-alias-syntax-params-rhs)
-alias(foo, bar(f))
-# mirth-test # merr # 2:12: error: expected no args
-# mirth-test # mret # 1

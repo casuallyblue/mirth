@@ -130,7 +130,7 @@ def(Prim.cname, Prim -- Str, dup ~cname memoize(
 
 def(+C99.sig-put, Str +C99 -- +C99, "static void " put put " (void)" put)
 
-embed-str(c99-header-str, "src/mirth/mirth.h")
+embed-str(c99-header-str, "src/mirth.h")
 def(c99-header!, +C99 -- +C99,
     "#define MIRTH_DEBUG " put
     emit-debug-info? if("1", "0") put line
