@@ -138,6 +138,7 @@ def(specialize-word!, SPKey Word -- Word,
         w body >body
         w NAMESPACE_WORD k >Name QNAME0 >qname
         0 >arity
+	w visibility >visibility
         Word.new! \(w' ->
             k >key w' >value KVPAIR
             w sp-synthed insert w ~sp-synthed !

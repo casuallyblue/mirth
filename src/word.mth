@@ -23,6 +23,7 @@ field(Word.~params, Word, Lazy(List(Var)))
 field(Word.~arrow, Word, Lazy(Arrow))
 field(Word.~prefer-inline?, Word, Bool)
 field(Word.~cname, Word, Str)
+field(Word.~visibility, Word, Visibility)
 
 def(Word.qname, Word -- QName, ~qname @)
 def(Word.namespace, Word -- Namespace, qname namespace)
@@ -33,6 +34,7 @@ def(Word.body, Word -- Token, ~body @)
 def(Word.arity, Word -- Int, ~arity @)
 def(Word.params, Word -- List(Var), ~params force!)
 def(Word.arrow, Word -- Arrow, ~arrow force!)
+def(Word.visibility, Word -- Visibility, ~visibility @)
 
 def(Word.cname, Word -- Str, dup ~cname memoize(
     Str("mw_" ; dup qname mangled ;)) nip)
@@ -45,13 +47,14 @@ def(Word.prefer-inline?, Word -- Bool, ~prefer-inline? @? unwrap-or(F))
 
 def(Word.new!,
     head:Token sig:Maybe(Token) body:Token
-    qname:QName arity:Int -- Word,
+    qname:QName arity:Int visibility:Visibility -- Word,
     Word.alloc!
     qname> over ~qname !
     head> over ~head !
     body> over ~body !
     arity> over ~arity !
     sig> over ~sig !
+    visibility> over ~visibility !
     dup DEF_WORD register)
 
 def(Word.==, Word Word -- Bool, both(index) ==)

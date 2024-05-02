@@ -139,6 +139,10 @@ def(Def.head?, Def -- Maybe(Token),
     DEF_TAG -> .data head?,
     DEF_VARIABLE -> head SOME)
 
+def(Def.visibility, Def -- Visibility,
+    DEF_WORD -> visibility,
+    _ -> drop Public)
+
 def(Def.defining-module?, Def -- Maybe(Module),
     head? map(.module))
 
@@ -164,3 +168,16 @@ def(Def.register, Def --,
 
 def(Def.def-index, Def -- Nat,
     qname dup name defs filter(dup2 qname <=) len nip)
+
+data(Visibility,
+  Public,
+  Private)
+
+def(Visibility.==, Visibility Visibility -- Bool,
+  Public -> match(
+    Public -> T,
+    _ -> drop F),
+  Private -> match(
+    Private -> T,
+    _ -> drop F))
+  

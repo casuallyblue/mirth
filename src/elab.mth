@@ -979,6 +979,8 @@ def(elab-module-decl!, Token +World -- Token +World,
         PRIM_SYNTAX_IMPORT -> elab-module-import!,
         PRIM_SYNTAX_ALIAS -> elab-alias!,
         PRIM_SYNTAX_INLINE -> elab-inline!,
+	PRIM_SYNTAX_PRIVATE -> elab-private!,
+	PRIM_SYNTAX_PUBLIC -> elab-public!,
         PRIM_SYNTAX_DEF -> elab-def!,
         PRIM_SYNTAX_DEF_MISSING -> elab-def-missing!,
         PRIM_SYNTAX_DEF_TYPE -> elab-def-type!,
@@ -1091,6 +1093,7 @@ def(data-word-new!, Data Str Int -- Word,
     dip2(dup head? unwrap dup >body >head)
     data-word-qname >qname
     NONE >sig
+    preferred-visibility >visibility
     Word.new!)
 
 def(elab-data-done!, Data --,
@@ -1282,12 +1285,29 @@ def(elab-def-missing!, Token -- Token,
 var(~prefer-inline-defs?, Bool)
 def(prefer-inline-defs?, Bool, ~prefer-inline-defs? @? unwrap-or(F))
 
+var(~preferred-visibility, Visibility)
+def(preferred-visibility, Visibility, ~preferred-visibility @? unwrap-or(Public))
+
 def(elab-inline!, Token +World -- Token +World,
     sip:next args-1
     dip:prefer-inline-defs?
     T ~prefer-inline-defs? !
     while(dup arg-end? not, elab-module-decl!)
     drop ~prefer-inline-defs? !)
+
+def(elab-private!, Token +World -- Token +World,
+    sip:next args-1
+    dip:preferred-visibility
+    Private ~preferred-visibility !
+    while(dup arg-end? not, elab-module-decl!)
+    drop ~preferred-visibility !)
+
+def(elab-public!, Token +World -- Token +World,
+    sip:next args-1
+    dip:preferred-visibility
+    Public ~preferred-visibility !
+    while(dup arg-end? not, elab-module-decl!)
+    drop ~preferred-visibility !)
 
 ||| Elaborate a word definition `def(w, t, b...)`.
 def(elab-def!, Token -- Token,
@@ -1297,6 +1317,7 @@ def(elab-def!, Token -- Token,
     dup >head
     dup num-args >arity
     elab-def-qname-undefined >qname
+    preferred-visibility >visibility
     Word.new!
 
     prefer-inline-defs? over ~prefer-inline? !
@@ -1446,6 +1467,7 @@ def(elab-embed-str!, Token +World -- Token +World,
     dup >body NONE >sig 0 >arity
     dup str? unwrap-or("expected source path" emit-fatal-error!)
     >Path open-file! .read-file! close-file! nip >contents
+    preferred-visibility >visibility
     Word.new!
     CTX0 T0 TYPE_STR T1 T-> ready2 over ~ctx-type !
     ab-build-word!(contents> ab-str!) drop)
@@ -1466,7 +1488,7 @@ def(table-qname, Table Str Int -- QName,
 
 def(table-word-new!, Table Str Int -- Word,
     over2 head dup >head >body NONE >sig
-    dup >arity table-qname >qname Word.new!)
+    dup >arity table-qname >qname preferred-visibility >visibility Word.new!)
 
 def(table-new!, Token QName -- Table,
     Table.alloc!
@@ -1648,10 +1670,12 @@ def(module-visible-from-token?, Token Module -- Bool,
     swap .module visible)
 
 def(def-visible-from-token?, Token Def -- Bool,
-    defining-module? match(
-        NONE -> drop T,
-        SOME -> module-visible-from-token?
-    ))
+    \(token def ->
+    def defining-module? match(
+        NONE -> T,
+        SOME -> dup dip(token) module-visible-from-token? 
+	    and(dup token .module == 
+	        or(def visibility Public ==)) dip(drop))))
 
 def(elab-tycon, Token Name -- Tycon,
     dup defs find-some(
