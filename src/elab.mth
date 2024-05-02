@@ -1016,6 +1016,7 @@ def(elab-data!, Token -- Token,
     sip(
         Data.alloc!
         L0 over ~tags !
+	preferred-visibility over ~visibility !
         swap args+
         uncons dip(elab-data-header!)
         for(elab-data-tag!)
@@ -1047,6 +1048,7 @@ def(elab-data-tag!, Data Token -- Data,
     dup2 name? unwrap-or(drop "Expected constructor name." emit-fatal-error!)
     0 data-qname
     Tag.alloc!
+    preferred-visibility over ~visibility !
     NONE over ~untag !
     tuck ~qname !
     dup DEF_TAG register
@@ -1273,6 +1275,7 @@ def(elab-alias!, Token -- Token,
             _ -> nip,
         )
     )
+    preferred-visibility
     Alias.new! drop))
 
 ||| Elaborate a missing word definition `def-missing(w,t,b...)`
@@ -1409,6 +1412,7 @@ def(elab-def-external!, Token -- Token,
     tuck ~symbol !
     tuck ~sig !
     tuck ~head !
+    preferred-visibility over ~visibility !
     dup delay(
         sig +TypeElab.type-sig-start!
         elab-type-sig! dip:ctx pack2 rdrop
@@ -1420,20 +1424,21 @@ def(elab-def-type!, Token -- Token,
     sip(next) args-2
     swap dup sig-type-con? else("expected type constructor" emit-fatal-error!)
     dup elab-def-qname-undefined
-    dip(SOME) rotl elab-simple-type-arg! TypeDef.new! drop)
+    dip(SOME) rotl elab-simple-type-arg! preferred-visibility TypeDef.new! drop)
 
 ||| Elaborate a buffer definition `buffer(B, size)`.
 def(elab-buffer!, Token -- Token,
     sip(next) args-2
     swap dup elab-def-qname-undefined
     rotl dup int? unwrap-or("expected buffer size" emit-fatal-error!) nip
-   >Size Buffer.new! drop)
+   >Size preferred-visibility Buffer.new! drop)
 
 ||| Elaborate a var declaration `var(v, type)`.
 def(elab-variable!, Token -- Token,
     sip(next) args-2
     swap dup elab-def-qname-undefined
     rotl delay(elab-simple-type-arg!)
+    preferred-visibility
     Variable.new! drop)
 
 ||| Elaborate a table definition `table(T)`.
@@ -1495,6 +1500,7 @@ def(table-new!, Token QName -- Table,
     tuck ~qname !
     tuck ~head !
     TABLE_MAX_COUNT over ~max-count !
+    preferred-visibility over ~visibility !
     dup DEF_TABLE register
 
     # Table.MAX
@@ -1525,7 +1531,7 @@ def(table-new!, Token QName -- Table,
     # Table.NUM
     dup head
     over "NUM" 0 table-qname
-    8 >Size Buffer.new!
+    8 >Size preferred-visibility Buffer.new!
     over ~num-buffer !
 
     # Table.index
@@ -1729,6 +1735,7 @@ def(field-new!, Token Token Token QName -- Field,
     Field.alloc!
     tuck ~qname !
     tuck ~head !
+    preferred-visibility over ~visibility !
     swap delay(elab-simple-type-arg!) over ~value-type !
     swap delay(elab-simple-type-arg!) over ~index-type !
     dup DEF_FIELD register)

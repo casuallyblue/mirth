@@ -92,7 +92,7 @@ def(PrimType.>Int, PrimType -- Int, PrimType.tag)
 def(PrimType.==, PrimType PrimType -- Bool, both(>Int) ==)
 
 def(def-prim-type!, PrimType --,
-    dip(NONE) dup tycon-qname swap TPrim TypeDef.new! drop)
+    dip(NONE) dup tycon-qname swap TPrim Public TypeDef.new! drop)
 
 def(init-types!, --,
     PRIM_TYPE_INT def-prim-type!

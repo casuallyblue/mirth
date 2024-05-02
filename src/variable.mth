@@ -11,14 +11,17 @@ table(Variable)
 field(Variable.~head, Variable, Token)
 field(Variable.~qname, Variable, QName)
 field(Variable.~type, Variable, Lazy(Type))
+field(Variable.~visibility, Variable, Visibility)
 
 def(Variable.head, Variable -- Token, ~head @)
 def(Variable.qname, Variable -- QName, ~qname @)
 def(Variable.name, Variable -- Name, qname name)
 def(Variable.type, Variable -- Type, ~type force!)
+def(Variable.visibility, Variable -- Visibility, ~visibility @)
 
-def(Variable.new!, Token QName Lazy(Type) -- Variable,
+def(Variable.new!, Token QName Lazy(Type) Visibility -- Variable,
     Variable.alloc!
+    tuck ~visibility !
     tuck ~type !
     tuck ~qname !
     tuck ~head !

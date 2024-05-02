@@ -7,6 +7,7 @@ import(mirth.type)
 import(mirth.buffer)
 import(mirth.word)
 import(mirth.token)
+import(mirth.def)
 
 # mirth/data/table
 table(Table)
@@ -14,6 +15,7 @@ field(Table.~head, Table, Token) # where the table was defined
 field(Table.~qname, Table, QName)
 field(Table.~num-buffer, Table, Buffer)
 field(Table.~max-count, Table, Nat)
+field(Table.~visibility, Table, Visibility)
 
 def(Table.head, Table -- Token, ~head @)
 def(Table.qname, Table -- QName, ~qname @)
@@ -21,6 +23,7 @@ def(Table.namespace, Table -- Namespace, qname namespace)
 def(Table.name, Table -- Name, qname name)
 def(Table.num-buffer, Table -- Buffer, ~num-buffer @)
 def(Table.max-count, Table -- Nat, ~max-count @)
+def(Table.visibility, Table -- Visibility, ~visibility @)
 def(Table.==, Table Table -- Bool, both(index) ==)
 
 table(Field)
@@ -28,12 +31,14 @@ field(Field.~head, Field, Token)
 field(Field.~qname, Field, QName)
 field(Field.~index-type, Field, Lazy(Type))
 field(Field.~value-type, Field, Lazy(Type))
+field(Field.~visibility, Field, Visibility)
 
 def(Field.head, Field -- Token, ~head @)
 def(Field.qname, Field -- QName, ~qname @)
 def(Field.name, Field -- Name, qname name)
 def(Field.index-type, Field -- Type, ~index-type force!)
 def(Field.value-type, Field -- Type, ~value-type force!)
+def(Field.visibility, Field -- Visibility, ~visibility @)
 
 def(Field.dom, Field -- StackType, index-type T1)
 def(Field.cod, Field -- StackType, value-type TMut T1)

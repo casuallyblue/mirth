@@ -10,14 +10,17 @@ table(Buffer)
 field(Buffer.~head, Buffer, Token)
 field(Buffer.~size, Buffer, Size)
 field(Buffer.~qname, Buffer, QName)
+field(Buffer.~visibility, Buffer, Visibility)
 
 def(Buffer.head, Buffer -- Token, ~head @)
 def(Buffer.size, Buffer -- Size, ~size @)
 def(Buffer.qname, Buffer -- QName, ~qname @)
 def(Buffer.name, Buffer -- Name, qname name)
+def(Buffer.visibility, Buffer -- Visibility, ~visibility @)
 
-def(Buffer.new!, Token QName Size -- Buffer,
+def(Buffer.new!, Token QName Size Visibility -- Buffer,
     Buffer.alloc!
+    tuck ~visibility !
     tuck ~size !
     tuck ~qname !
     tuck ~head !

@@ -21,6 +21,7 @@ field(Data.~qname, Data, QName)
 field(Data.~arity, Data, Int)
 field(Data.~params, Data, Lazy(List(Var)))
 field(Data.~tags, Data, List(Tag))
+field(Data.~visibility, Data, Visibility)
 
 def(Data.head?, Data -- Maybe(Token), ~head? @)
 def(Data.qname, Data -- QName, ~qname @)
@@ -29,6 +30,7 @@ def(Data.name, Data -- Name, qname name)
 def(Data.arity, Data -- Int, ~arity @)
 def(Data.params, Data -- List(Var), ~params force!)
 def(Data.tags, Data -- List(Tag), ~tags @)
+def(Data.visibility, Data -- Visibility, ~visibility @)
 
 var(DATA_BOOL, Data)
 var(TAG_T, Tag)
@@ -59,6 +61,7 @@ def(make-prim-data!, Str Int Mut(Data) List(Mut(Tag)) --,
     dip(
         dip(QName.prim)
         tuck ~qname !
+	Public over ~visibility !
         dup DEF_DATA register
     )
     { Data List(Tag) }
@@ -67,6 +70,7 @@ def(make-prim-data!, Str Int Mut(Data) List(Mut(Tag)) --,
     { Data }
     0 over ~arity !
     L0 ready over ~params !
+    Public over ~visibility !
     NONE over ~head? !
     drop)
 
@@ -78,6 +82,7 @@ def(make-prim-tag!, Str Int List(Type) Mut(Tag) --,
     sip(L0 swap ~label-inputs !)
     sip(0 >Nat swap ~num-resource-inputs !)
     sip(dip(>Nat) ~value !)
+    sip(Public swap ~visibility !)
     sip(.data swap 0 data-word-qname) tuck ~qname !
     DEF_TAG register)
 
@@ -161,6 +166,7 @@ field(Tag.~num-resource-inputs, Tag, Nat)
 field(Tag.~sig?, Tag, Maybe(Token))
 field(Tag.~ctx-type, Tag, Lazy([Ctx ArrowType]))
 field(Tag.~untag, Tag, Maybe(Word))
+field(Tag.~visibility, Tag, Visibility)
 
 def(Tag.data, Tag -- Data, ~data @)
 def(Tag.qname, Tag -- QName, ~qname @)
@@ -174,6 +180,7 @@ def(Tag.ctx-type, Tag -- Ctx ArrowType, ~ctx-type force! unpack2)
 def(Tag.ctx, Tag -- Ctx, ctx-type drop)
 def(Tag.type, Tag -- ArrowType, ctx-type nip)
 def(Tag.untag, Tag -- Maybe(Word), ~untag @)
+def(Tag.visibility, Tag -- Visibility, ~visibility @)
 
 def(Tag.label-inputs-from-sig, Tag -- List(Label),
     sig? if-some(run-tokens filter(dup could-be-sig-label?) map(name? unwrap Label.new!), L0))

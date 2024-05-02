@@ -140,8 +140,19 @@ def(Def.head?, Def -- Maybe(Token),
     DEF_VARIABLE -> head SOME)
 
 def(Def.visibility, Def -- Visibility,
+    DEF_ALIAS -> visibility,
+    DEF_PACKAGE -> drop Public,
+    DEF_MODULE -> drop Public,
+    DEF_DATA -> visibility,
+    DEF_TABLE -> visibility,
+    DEF_TYPEDEF -> visibility,
+    DEF_BUFFER -> visibility,
+    DEF_PRIM -> drop Public,
+    DEF_EXTERNAL -> visibility,
     DEF_WORD -> visibility,
-    _ -> drop Public)
+    DEF_FIELD -> visibility,
+    DEF_TAG -> visibility,
+    DEF_VARIABLE -> visibility)
 
 def(Def.defining-module?, Def -- Maybe(Module),
     head? map(.module))
