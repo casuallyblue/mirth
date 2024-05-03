@@ -13696,15 +13696,6 @@ static void mw_mirth_data_makezmprimzmdatazn (void) {
 	mp_primzmswap();
 	mfld_mirth_data_Data_z126Uparams();
 	mp_primzmmutzmset();
-	push_u64(0LL); // Public
-	{
-		VAL d2 = pop_value();
-		mp_primzmdup();
-		push_value(d2);
-	}
-	mp_primzmswap();
-	mfld_mirth_data_Data_z126Uvisibility();
-	mp_primzmmutzmset();
 	push_u64(0LL); // NONE
 	{
 		VAL d2 = pop_value();
@@ -20606,6 +20597,32 @@ static void mw_mirth_prim_initzmprimszn (void) {
 		static VAL v;
 		if (! vready) {
 			v = mkstr("inline", 6);
+			vready = true;
+		}
+		push_value(v);
+		incref(v);
+	}
+	push_i64(-1LL);
+	mw_mirth_prim_defzmprimzn();
+	push_u64(80LL); // PRIM_SYNTAX_PRIVATE
+	{
+		static bool vready = false;
+		static VAL v;
+		if (! vready) {
+			v = mkstr("private", 7);
+			vready = true;
+		}
+		push_value(v);
+		incref(v);
+	}
+	push_i64(-1LL);
+	mw_mirth_prim_defzmprimzn();
+	push_u64(81LL); // PRIM_SYNTAX_PUBLIC
+	{
+		static bool vready = false;
+		static VAL v;
+		if (! vready) {
+			v = mkstr("public", 6);
 			vready = true;
 		}
 		push_value(v);

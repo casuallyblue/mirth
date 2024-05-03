@@ -150,6 +150,8 @@ def(init-prims!, --,
     PRIM_SYNTAX_MODULE "module" -1 def-prim!
     PRIM_SYNTAX_IMPORT "import" -1 def-prim!
     PRIM_SYNTAX_INLINE "inline" -1 def-prim!
+    PRIM_SYNTAX_PRIVATE "private" -1 def-prim!
+    PRIM_SYNTAX_PUBLIC "public" -1 def-prim!
     PRIM_SYNTAX_ALIAS "alias" -1 def-prim!
     PRIM_SYNTAX_DEF "def" -1 def-prim!
     PRIM_SYNTAX_DEF_TYPE "def-type" -1 def-prim!

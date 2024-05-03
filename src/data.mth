@@ -70,7 +70,6 @@ def(make-prim-data!, Str Int Mut(Data) List(Mut(Tag)) --,
     { Data }
     0 over ~arity !
     L0 ready over ~params !
-    Public over ~visibility !
     NONE over ~head? !
     drop)
 
